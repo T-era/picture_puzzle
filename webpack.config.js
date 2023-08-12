@@ -70,12 +70,6 @@ module.exports = {
       },
     }),
     new MiniCssExtractPlugin(),
-    new CopyFilePlugin({
-      patterns: [{
-        from: "./src/static/favicon.svg",
-        to: OUTPUT_DIR
-      }]
-    }),
     new InlineSourceWebpackPlugin({
       compress: true,
       rootpath: './src',

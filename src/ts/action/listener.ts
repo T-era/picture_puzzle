@@ -1,5 +1,5 @@
 import { FIELD, SHUFFLE_BUTTON } from "../doms";
-import { Pos, Setting } from "../types";
+import { Pos } from "../types";
 import { GameContext } from "./context";
 import { shuffle } from "./shuffle";
 
