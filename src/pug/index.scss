@@ -1,0 +1,35 @@
+#field {
+	position: relative;
+	border: 1px solid pink;
+
+	&.up {
+		cursor: n-resize;
+	}
+	&.down {
+		cursor: s-resize;
+	}
+	&.left {
+		cursor: w-resize;
+	}
+	&.right {
+		cursor: e-resize;
+	}
+	.parts {
+		position: absolute;
+		border: 1px solid red;
+		&.correct {
+			border-color: green;
+		}
+	}
+}
+#prev_wrapper {
+	position: relative;
+	#prev_canvas {
+		position: fixed;
+		width: 320px;
+		height: 200px;
+		right: 0;
+		bottom: 0;
+		z-index: 10;
+	}
+}
