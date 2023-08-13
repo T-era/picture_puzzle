@@ -1,6 +1,5 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const CopyFilePlugin = require("copy-webpack-plugin");
 const InlineSourceWebpackPlugin = require('inline-source-webpack-plugin');
 
 const PUBLIC_URL = '/build';

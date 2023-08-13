@@ -1,31 +1,41 @@
 import { FieldPart } from "../init/partsFactory";
 import { Pos } from "../types";
 
-const ANIME_FRAMES = 10;
-interface MovingReqyest {
-    from :Pos;
-    to :Pos;
-    target :FieldPart;
+const ANIME_FRAMES = 3;
+interface MovingRequest {
+    pdx :number;
+    pdy :number;
+    targets :MovingTarget[];
 }
-class MovingAnime {
-    target :FieldPart
-    dx :number;
-    dy :number;
-    currentPPos :Pos;
-    current :number;
-    constructor(req :MovingReqyest) {
-        this.target = req.target;
-        this.dx = (req.to.x - req.from.x) / ANIME_FRAMES;
-        this.dy = (req.to.y - req.from.y) / ANIME_FRAMES;
-        this.current = 0;
-        this.currentPPos = { x: req.from.x, y: req.from.y };
+export class MovingTarget {
+    private currentPPos :Pos;
+    constructor(private target :FieldPart, startPPos :Pos) {
+        this.currentPPos = { ...startPPos };
     }
-    running() {
-        this.currentPPos.x += this.dx;
-        this.currentPPos.y += this.dy;
+    move(dx :number, dy :number) {
+        this.currentPPos.x += dx;
+        this.currentPPos.y += dy;
         this.target.canvas.style.left = `${this.currentPPos.x}px`;
         this.target.canvas.style.top = `${this.currentPPos.y}px`;
+    }
+}
+
+class MovingAnime {
+    targets :MovingTarget[];
+    dx :number;
+    dy :number;
+    current :number;
+    constructor(req :MovingRequest) {
+        this.current = 1;
+        this.targets = req.targets;
+        this.dx = req.pdx / ANIME_FRAMES;
+        this.dy = req.pdy / ANIME_FRAMES;
+        this.targets.forEach(t => t.move(this.dx, this.dy));
+    }
+    running() {
         this.current ++;
+        this.targets.forEach(t => t.move(this.dx, this.dy));
+
         if (this.current < ANIME_FRAMES) {
             return false;
         } else {
@@ -34,8 +44,12 @@ class MovingAnime {
     }
 }
 
+type Action = () => void;
+
 const movingAnimeManager = new class {
     queue :MovingAnime[] = [];
+    finalize ?:Action;
+
     runMovingAnime() {
         if (this.queue.length) {
             const temp :(MovingAnime|undefined)[] = this.queue;
@@ -46,14 +60,20 @@ const movingAnimeManager = new class {
                 }
             });
             this.queue = temp.filter(Boolean) as MovingAnime[];
+        } else if (this.finalize) {
+            this.finalize();
+            this.finalize = undefined;
         }
     }
 };
-//export function init() {
-setInterval(() => movingAnimeManager.runMovingAnime(), 0.02);
-//}
-export function addAnimeQueue(req :MovingReqyest) {
+
+setInterval(() => movingAnimeManager.runMovingAnime(), 100);
+
+export function addAnimeQueue(req :MovingRequest) {
     const ma = new MovingAnime(req);
     ma.running();
     movingAnimeManager.queue.push(ma);
+}
+export function addAnimeQueueFinally(action :Action) {
+    movingAnimeManager.finalize = action
 }

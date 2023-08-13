@@ -40,8 +40,9 @@ export class PosRange {
     }
 }
 export class PLConverter {
-    constructor(private readonly pRange :PosRange, private readonly lRange :PosRange) {
-
+    constructor(
+        private readonly pRange :PosRange,
+        private readonly lRange :PosRange) {
     }
     lFromP(pPos :Pos) :Pos {
         return {
@@ -53,7 +54,7 @@ export class PLConverter {
                     this.pRange.y.where(pPos.y))),
         };
     }
-    pFromL(lPos :Pos, type :RangeType = RangeType.Center) {
+    pFromL(lPos :Pos, type :RangeType = RangeType.Center) :Pos {
         const offset = offsetByType(type);
         return {
             x: this.pRange.x.at(

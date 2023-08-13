@@ -3,6 +3,7 @@ import { Pos } from "../types";
 interface Movable {
     moveTo(pos :Pos) :void;
 }
+
 export function shuffle<T extends Movable>(origin :(T|undefined)[][]) {
     const flatted = flat(origin);
     swap(flatted, flatted.length * 2); // 偶数回である必要がある。
@@ -13,7 +14,6 @@ export function shuffle<T extends Movable>(origin :(T|undefined)[][]) {
             const item = flatted.shift();
             origin[y][x] = item;
             item?.moveTo({x, y});
-
         }
     }
 }

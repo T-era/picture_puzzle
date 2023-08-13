@@ -6,3 +6,4 @@ export const X_SIZE_INPUT = document.getElementById('x_size') as HTMLInputElemen
 export const Y_SIZE_INPUT = document.getElementById('y_size') as HTMLInputElement;
 export const FIELD = document.getElementById('field') as HTMLDivElement;
 export const SHUFFLE_BUTTON = document.getElementById('shuffle') as HTMLButtonElement;
+export const ANSWER_CANVAS = document.getElementById('answer') as HTMLCanvasElement;

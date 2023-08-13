@@ -1,15 +1,15 @@
 import '../pug/index.scss';
-import { GameContext } from './action/context';
+import { GameContext, PrepareContext } from './action/context';
 import { ImageSplitter, filePreviewInit } from './init';
 import { FieldPart } from './init/partsFactory';
 import { Setting } from './types';
 
 filePreviewInit();
-const game = new GameContext();
+const prepare = new PrepareContext();
 
 const imageSplitter = new ImageSplitter({
     onSettingChanged(setting :Setting<FieldPart>) {
-        game.setSetting(setting);
+        prepare.setSetting(setting);
     }
 })
 export {};
