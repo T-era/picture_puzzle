@@ -1,0 +1,63 @@
+.wrapper {
+    display: grid;
+    grid-template-rows: minmax(400px, auto) 3rem;
+    height: 100%;
+    .game {
+
+        #field {
+            position: absolute;
+            top: 0;
+            left: 0;
+            border: 1px solid pink;
+        
+            &.up {
+                cursor: n-resize;
+            }
+            &.down {
+                cursor: s-resize;
+            }
+            &.left {
+                cursor: w-resize;
+            }
+            &.right {
+                cursor: e-resize;
+            }
+            .parts {
+                position: absolute;
+                border: 2px solid red;
+                &.correct {
+                    border-color: green;
+                }
+            }
+        }
+        
+        #result {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            opacity: 0;
+            width: 644px;
+            height: 404px;
+            visibility: hidden;
+            background-color: white;
+            &.show {
+                animation-name: show_answer;
+                animation-duration: 400ms;
+                visibility: visible;
+                opacity: 1;
+            }
+        }
+    }
+    @import "./game_footer";
+    @keyframes show_answer {
+        0% {
+            opacity: 0;
+        }
+        50% {
+            opacity: 0.5;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
+}

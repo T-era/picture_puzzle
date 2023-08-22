@@ -1,22 +1,43 @@
-import { addAnimeQueue, MovingTarget } from "../anime/moving";
-import { FIELD } from "../doms";
-import { FieldPart } from "../init/partsFactory";
-import { RangeType } from "../tools/posRange";
-import { isSamePos, Motion, MovingDirection, PLPos, Pos } from "../types";
-import { GameContext } from "./context";
+import { addMovingAnimeQueue } from "@lib/tools/anime/moving";
+import { EventWrapper } from "../../eventWrapper";
+import { RangeType } from "@lib/tools/posRange";
+import { FieldPart, isSamePos, motionFromDirection, MovingDirection, MovingTarget, Pos } from "@lib/types";
+import { GameContext } from "../../game/gameContext";
+import { FIELD } from "@lib/doms";
 
-export class ActionListener {
-    constructor(private context :GameContext) {
-        FIELD.onmousemove = this.mouseEventWrapper((e, pPos, lPos) => this.mouseMoved(e, pPos, lPos));
-        FIELD.onclick = this.mouseEventWrapper((e, pPos, lPos) => this.clicked(e, pPos, lPos));
+class MouseEventWrapper extends EventWrapper<MouseEvent> {
+    constructor(private context: GameContext) {
+        super(context)
     }
+    protected override offsetFromEvent(e: MouseEvent): Pos|undefined {
+        const target = e.target as HTMLElement;
+        const { offsetX, offsetY } = offsetByField();
+        const { offsetX: x, offsetY: y } = e;
 
-    private mouseEventWrapper(f :(e :MouseEvent, pPos :Pos, lPos :Pos)=>void) {
-        return (e :MouseEvent) => {
-            const { pPos, lPos } = this.posFromMouseEvent(e);
-            if (! pPos || ! lPos) return;
-            f(e, pPos, lPos);
-        };
+        if (x < 0 || this.context.setting.imageSize.width <= x
+            || y < 0 || this.context.setting.imageSize.height <= y) {
+            return undefined;
+        }
+        return {
+            x: x + offsetX,
+            y: y + offsetY,
+        }
+        function offsetByField() {
+            if (target === FIELD) {
+                return { offsetX: 0, offsetY: 0 };
+            } else {
+                return { offsetX: target.offsetLeft, offsetY: target.offsetTop };
+            }
+        }
+   
+    }
+}
+
+export class MouseActionListener {
+    constructor(private context :GameContext) {
+        const eventWrapper = new MouseEventWrapper(context);
+        FIELD.onmousemove = eventWrapper.eventWrapper((e, { pPos, lPos }) => this.mouseMoved(e, pPos, lPos));
+        FIELD.onmousedown = eventWrapper.eventWrapper((e, { pPos, lPos }) => this.clicked(e, pPos, lPos));
     }
 
     mouseMoved(e :MouseEvent, pPos :Pos, lPos :Pos) {
@@ -58,7 +79,6 @@ export class ActionListener {
                 const nextLPos = motion(tempLPos);
 
                 if (currentPart) {
-                    console.log(tempLPos, currentPart);
                     targets.push(currentPart.moveTo(nextLPos));
                 } else {
                     throw `NG!! ${tempLPos.x}, ${tempLPos.y}`;
@@ -68,7 +88,7 @@ export class ActionListener {
             }
             this.context.parts[tempLPos.y][tempLPos.x] = prevPart;
 
-            addAnimeQueue({
+            addMovingAnimeQueue({
                 targets,
                 pdx,
                 pdy
@@ -109,63 +129,10 @@ export class ActionListener {
             return MovingDirection.ToRight;
         } 
     }
-    private posFromMouseEvent(e :MouseEvent) :PLPos {
-        const pPos = this.pPosFromMouseEvent(e);
-        if (! pPos) {
-            return { pPos: undefined, lPos: undefined };
-        }
-        const lPos = this.context.setting.plConverter.lFromP(pPos);
-        if (! lPos || ! this.context.isInRange(lPos)) {
-            return { pPos, lPos: undefined };
-        };
-        return { pPos, lPos };
-    }
-    
-    private pPosFromMouseEvent(e :MouseEvent) :Pos|undefined {
-        const target = e.target as HTMLElement;
-        const { offsetX, offsetY } = offsetByField();
-        const { offsetX: x, offsetY: y } = e;
-
-        if (x < 0 || this.context.setting.imageSize.width <= x
-            || y < 0 || this.context.setting.imageSize.height <= y) {
-            return undefined;
-        }
-        return {
-            x: x + offsetX,
-            y: y + offsetY,
-        }
-        function offsetByField() {
-            if (target === FIELD) {
-                return { offsetX: 0, offsetY: 0 };
-            } else {
-                return { offsetX: target.offsetLeft, offsetY: target.offsetTop };
-            }
-        }
-    }
 
     revoke() {
         FIELD.onmousemove = null;
-        FIELD.onclick = null;
+        FIELD.onmousedown = null;
     }
 }
 
-function motionFromDirection(d :MovingDirection) :Motion {
-    switch (d) {
-        case MovingDirection.ToUp:
-            return (p :Pos) => {
-                return { x: p.x, y: p.y - 1 };
-            };
-        case MovingDirection.ToDown:
-            return (p :Pos) => {
-                return { x: p.x, y: p.y + 1 };
-            };
-        case MovingDirection.ToLeft:
-            return (p :Pos) => {
-                return { x: p.x - 1, y: p.y };
-            };
-        case MovingDirection.ToRight:
-            return (p :Pos) => {
-                return { x: p.x + 1, y: p.y };
-            };
-    }
-}

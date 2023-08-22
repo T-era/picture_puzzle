@@ -1,0 +1,49 @@
+.settings {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    padding: 1em;
+    background: white;
+
+    fieldset {
+        width: 60%;
+        border: none;
+        legend {
+            display: block;
+            align-self: center;
+            font-weight: bold;
+            text-decoration: underline;
+        }
+        &.image {
+            .content {
+                display: flex;
+                flex-direction: row;
+                gap: 10px;
+                justify-content: center;
+                align-items: center;
+                img {
+                    width: 100px;
+                    height: 100px;
+                }
+            }
+        }
+        &.cutting {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            .content {
+                display: flex;
+                flex-direction: column;
+            }
+        }
+    }
+    .control {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        gap: 2em;
+        button {
+            width: 100px;
+        }
+    }
+}

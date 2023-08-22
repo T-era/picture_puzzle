@@ -1,6 +1,7 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const InlineSourceWebpackPlugin = require('inline-source-webpack-plugin');
+const path = require('path');
 
 const PUBLIC_URL = '/build';
 const OUTPUT_DIR = `${__dirname}/build`;
@@ -9,6 +10,7 @@ module.exports = {
   // モード値を production に設定すると最適化された状態で、
   // development に設定するとソースマップ有効でJSファイルが出力される
   mode: "development",
+  devtool: 'source-map',
 
   // メインとなるJavaScriptファイル（エントリーポイント）
   entry: "./src/ts/index.ts",
@@ -77,7 +79,10 @@ module.exports = {
   ],
   // import 文で .ts や .tsx ファイルを解決するため
   resolve: {
-    extensions: [".ts", ".js", ".json"]
+    extensions: [".ts", ".js", ".json"],
+    alias: {
+      "@lib": path.resolve(__dirname,'./src/ts/lib')
+    }
   },
   // ES5(IE11等)向けの指定（webpack 5以上で必要）
   target: ["web", "es5"],

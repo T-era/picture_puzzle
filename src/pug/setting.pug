@@ -1,7 +1,18 @@
-img#img
-div#prev_wrapper
-    canvas#prev_canvas(width="640" height="400")
-input#file_input(type="file")
-input#x_size(type="number" value="3" min=2)
-input#y_size(type="number" value="3" min=2)
-button#shuffle Shuffle
+mixin Setting(cencelable, idSuffix='')
+    div.settings(id=`settings${idSuffix}`)
+        fieldset.image
+            legend 画像
+            .content
+                img(id=`img_preview${idSuffix}`)
+                input(id=`file_input${idSuffix}` type="file" accept="image/*")
+        fieldset.cutting 
+            legend コマわり
+            .content
+                label ↔️
+                    input(id=`x_size${idSuffix}` type="number" value="3" min=2)
+                label ↕️
+                    input(id=`y_size${idSuffix}` type="number" value="3" min=2)
+        div.control
+            button(id=`setting_ok${idSuffix}`) Go
+            if cencelable
+                button(id=`setting_cancel${idSuffix}`) Cancel

@@ -1,0 +1,8 @@
+- var colors = [["white ", "#f00", "#ff8", "#084"],["#40f","#844","#0f8","#84f"],["#f08", "#8f0", "#488", "#048"],["#84f","#f44","#40f","#0f8"]]
+mixin plate(x, y, dx, dy)
+    rect(x=x * 8 y=y * 8 width=7 height=7 fill=colors[y][x])
+
+svg#shuffle_button.icon(xmlns='http://www.w3.org/2000/svg' viewbox='0 0 32 32' title="shuffle")
+    -for(let y = 0; y < 4; y ++)
+        -for(let x = 0; x < 4; x ++)
+            +plate(x, y)

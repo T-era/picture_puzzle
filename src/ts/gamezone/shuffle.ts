@@ -1,10 +1,12 @@
-import { Pos } from "../types";
+import { RESULT_CANVAS } from "@lib/doms";
+import { Pos } from "@lib/types";
 
 interface Movable {
     moveTo(pos :Pos) :void;
 }
 
 export function shuffle<T extends Movable>(origin :(T|undefined)[][]) {
+
     const flatted = flat(origin);
     swap(flatted, flatted.length * 2); // 偶数回である必要がある。
 

@@ -1,4 +1,4 @@
-import { Pos, Size } from "../types";
+import { Pos, Size } from "@lib/types";
 
 export class Range {
     constructor(

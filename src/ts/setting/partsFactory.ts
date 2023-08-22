@@ -1,10 +1,9 @@
-import { addAnimeQueue, MovingTarget } from "../anime/moving";
-import { PLConverter, RangeType } from "../tools/posRange";
-import { isSamePos, Pos } from "../types";
+import { PLConverter, RangeType } from "@lib/tools/posRange";
+import { isSamePos, MovingTarget, Pos } from "@lib/types";
 
 const BORDER_WIDTH = 2 * 2 + 1;
 
-export class FieldPart {
+export class FieldPartImpl {
     canvas :HTMLCanvasElement;
     private correctLPos :Pos;
     currentLPos :Pos;
@@ -12,7 +11,8 @@ export class FieldPart {
     constructor(
         cnvContext :CanvasRenderingContext2D,
         private readonly plConverter :PLConverter,
-        lPos :Pos) {
+        lPos :Pos
+    ) {
         this.correctLPos = lPos;
         const size = plConverter.pPartSize;
         const { x, y } = plConverter.pFromL(lPos, RangeType.Min);
@@ -52,7 +52,10 @@ export class FieldPart {
 
         return new MovingTarget(this, from);
     }
-    get isCorrectPos() {
+    currentPPos() :Pos {
+        return this.plConverter.pFromL(this.currentLPos, RangeType.Min);
+    }
+    get isCorrectPos() :boolean {
         return isSamePos(this.correctLPos, this.currentLPos);
     }
 }

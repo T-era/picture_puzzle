@@ -1,68 +1,51 @@
-.game {
+html, body {
+	width: 100%;
+	height: 100%;
+	margin:0;
+	padding:0;
+}
+.scenes {
+	width: 100%;
+	height: 100%;
 	position: relative;
-	#field {
+	.scene {
 		position: absolute;
 		top: 0;
 		left: 0;
-		border: 1px solid pink;
-	
-		&.up {
-			cursor: n-resize;
-		}
-		&.down {
-			cursor: s-resize;
-		}
-		&.left {
-			cursor: w-resize;
-		}
-		&.right {
-			cursor: e-resize;
-		}
-		.parts {
-			position: absolute;
-			border: 2px solid red;
-			&.correct {
-				border-color: green;
-			}
+		bottom: 0;
+		right: 0;
+		@import './setting';
+		@import './game';
+	}
+	#prev_wrapper {
+		position: relative;
+		#prev_canvas {
+			position: fixed;
+			width: 320px;
+			height: 200px;
+			right: 0;
+			bottom: 0;
+			z-index: 10;
 		}
 	}
 	
-	#answer {
-		position: absolute;
-		top: 0px;
-		left: 0px;
-		opacity: 0;
-		width: 644px;
-		height: 404px;
-		display: none;
-		background-color: white;
-		&.show {
-			animation-name: show_answer;
-			animation-duration: 400ms;
-			display: unset;
-			opacity: 1;
-		}
-	}
 }
-@keyframes show_answer {
-	0% {
-		opacity: 0;
-	}
-	50% {
-		opacity: 0.5;
-	}
-	100% {
-		opacity: 1;
-	}
-}
-#prev_wrapper {
+#overlay {
+	visibility: hidden;
 	position: relative;
-	#prev_canvas {
+
+	.background {
 		position: fixed;
-		width: 320px;
-		height: 200px;
+		top: 0;
+		left: 0;
 		right: 0;
 		bottom: 0;
-		z-index: 10;
+		background: rgb(.5 .5 .5/.5);
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+
+		@import './setting';
 	}
 }
