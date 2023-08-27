@@ -4,18 +4,18 @@ html, body {
 	margin:0;
 	padding:0;
 }
-.scenes {
+.main {
 	width: 100%;
 	height: 100%;
 	position: relative;
-	.scene {
+	.container {
 		position: absolute;
 		top: 0;
 		left: 0;
 		bottom: 0;
 		right: 0;
 		@import './setting';
-		@import './game';
+		@import './gamezone/game';
 	}
 	#prev_wrapper {
 		position: relative;
@@ -30,7 +30,7 @@ html, body {
 	}
 	
 }
-#overlay {
+.modals {
 	visibility: hidden;
 	position: relative;
 

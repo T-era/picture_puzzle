@@ -1,6 +1,6 @@
 import { FIELD } from "@lib/doms";
 import { MovingDirection, PLPos, Pos } from "@lib/types";
-import { GameContext } from "..//gameContext";
+import { GameContext } from "../gameContext";
 import { EventWrapper } from "../../eventWrapper";
 
 export interface SwipeHandler {

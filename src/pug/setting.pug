@@ -1,18 +1,17 @@
-mixin Setting(cencelable, idSuffix='')
-    div.settings(id=`settings${idSuffix}`)
-        fieldset.image
-            legend 画像
-            .content
-                img(id=`img_preview${idSuffix}`)
-                input(id=`file_input${idSuffix}` type="file" accept="image/*")
-        fieldset.cutting 
-            legend コマわり
-            .content
-                label ↔️
-                    input(id=`x_size${idSuffix}` type="number" value="3" min=2)
-                label ↕️
-                    input(id=`y_size${idSuffix}` type="number" value="3" min=2)
-        div.control
-            button(id=`setting_ok${idSuffix}`) Go
-            if cencelable
-                button(id=`setting_cancel${idSuffix}`) Cancel
+div.setting#setting
+    fieldset.image
+        legend 画像
+        .content
+            .image_wrapper
+                img#img_preview
+            input#file_input(type="file" accept="image/*")
+    fieldset.cutting 
+        legend コマわり
+        .content
+            label ↔️
+                input#x_size(type="number" value="3" min=2)
+            label ↕️
+                input#y_size(type="number" value="3" min=2)
+    div.control
+        button#setting_ok Go
+        button#setting_cancel Cancel

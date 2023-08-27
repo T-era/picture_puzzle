@@ -1,4 +1,3 @@
-import { RESULT_CANVAS } from "@lib/doms";
 import { Pos } from "@lib/types";
 
 interface Movable {
@@ -6,7 +5,6 @@ interface Movable {
 }
 
 export function shuffle<T extends Movable>(origin :(T|undefined)[][]) {
-
     const flatted = flat(origin);
     swap(flatted, flatted.length * 2); // 偶数回である必要がある。
 
@@ -23,6 +21,7 @@ export function shuffle<T extends Movable>(origin :(T|undefined)[][]) {
 function flat<T>(origin :T[][]) :T[] {
     return ([] as T[]).concat.apply([], origin);
 }
+
 function swap<T>(origin :T[], cnt :number) {
     while (cnt > 0) {
         swapOnce(origin);

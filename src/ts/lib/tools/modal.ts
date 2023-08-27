@@ -1,6 +1,10 @@
-export async function withElement<T>(dom :HTMLElement, f :()=>Promise<T>) :Promise<T> {
-    dom.style.visibility = 'visible';
+export async function withElements<T>(f :()=>Promise<T>, ...doms :HTMLElement[]) :Promise<T> {
+    for (let dom of doms) {
+        dom.style.visibility = 'visible'
+    };
     const ret = await f();
-    dom.style.visibility = 'hidden'
+    for (let dom of doms) {
+        dom.style.visibility = 'hidden'
+    }
     return ret;
 } 

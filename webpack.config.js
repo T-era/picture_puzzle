@@ -81,7 +81,8 @@ module.exports = {
   resolve: {
     extensions: [".ts", ".js", ".json"],
     alias: {
-      "@lib": path.resolve(__dirname,'./src/ts/lib')
+      "@lib": path.resolve(__dirname,'./src/ts/lib'),
+      "@core": path.resolve(__dirname,'./src/ts/core')
     }
   },
   // ES5(IE11等)向けの指定（webpack 5以上で必要）

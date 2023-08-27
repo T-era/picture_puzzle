@@ -16,7 +16,7 @@ export class FieldPartImpl {
         this.correctLPos = lPos;
         const size = plConverter.pPartSize;
         const { x, y } = plConverter.pFromL(lPos, RangeType.Min);
-        this.currentLPos = lPos; //{ x, y };
+        this.currentLPos = lPos;
         const imageData = cnvContext.getImageData(
             x,
             y,

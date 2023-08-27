@@ -3,11 +3,15 @@
     flex-direction: row;
     gap: 16px;
     justify-content: center;
+    margin: auto;
     .icon {
         width: 32px;
         height: 32px;
-        background-color: white;
-    
+        background-color: #eee;
+        border: 1px solid #ccc;
+        padding: 2px;
+        border-radius: 5px;
+
         .black {
             stroke: #004;
             fill: #004;

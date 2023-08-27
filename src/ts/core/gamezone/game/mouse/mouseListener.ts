@@ -2,7 +2,7 @@ import { addMovingAnimeQueue } from "@lib/tools/anime/moving";
 import { EventWrapper } from "../../eventWrapper";
 import { RangeType } from "@lib/tools/posRange";
 import { FieldPart, isSamePos, motionFromDirection, MovingDirection, MovingTarget, Pos } from "@lib/types";
-import { GameContext } from "../../game/gameContext";
+import { GameContext } from "../gameContext";
 import { FIELD } from "@lib/doms";
 
 class MouseEventWrapper extends EventWrapper<MouseEvent> {
@@ -64,35 +64,36 @@ export class MouseActionListener {
         const direction = this.getMovingDirection(pPos, lPos, emptyLPos);
 
         if (direction) {
-            const motion = motionFromDirection(direction);
-            const dp = motion({ x: 0, y: 0 });
+            this.context.move(lPos, direction);
+            // const motion = motionFromDirection(direction);
+            // const dp = motion({ x: 0, y: 0 });
 
-            const pdx = dp.x * this.context.setting.partWidth;
-            const pdy = dp.y * this.context.setting.partHeight;
+            // const pdx = dp.x * this.context.setting.partWidth;
+            // const pdy = dp.y * this.context.setting.partHeight;
 
-            let prevPart :FieldPart|undefined = undefined;
-            const targets :MovingTarget[] = [];
-            let tempLPos = { ...lPos };
-            while (! isSamePos(tempLPos, emptyLPos)) {
-                const currentPart = this.context.parts[tempLPos.y][tempLPos.x];
-                this.context.parts[tempLPos.y][tempLPos.x] = prevPart;
-                const nextLPos = motion(tempLPos);
+            // let prevPart :FieldPart|undefined = undefined;
+            // const targets :MovingTarget[] = [];
+            // let tempLPos = { ...lPos };
+            // while (! isSamePos(tempLPos, emptyLPos)) {
+            //     const currentPart = this.context.parts[tempLPos.y][tempLPos.x];
+            //     this.context.parts[tempLPos.y][tempLPos.x] = prevPart;
+            //     const nextLPos = motion(tempLPos);
 
-                if (currentPart) {
-                    targets.push(currentPart.moveTo(nextLPos));
-                } else {
-                    throw `NG!! ${tempLPos.x}, ${tempLPos.y}`;
-                }
-                prevPart = currentPart;
-                tempLPos = nextLPos;
-            }
-            this.context.parts[tempLPos.y][tempLPos.x] = prevPart;
+            //     if (currentPart) {
+            //         targets.push(currentPart.moveTo(nextLPos));
+            //     } else {
+            //         throw `NG!! ${tempLPos.x}, ${tempLPos.y}`;
+            //     }
+            //     prevPart = currentPart;
+            //     tempLPos = nextLPos;
+            // }
+            // this.context.parts[tempLPos.y][tempLPos.x] = prevPart;
 
-            addMovingAnimeQueue({
-                targets,
-                pdx,
-                pdy
-            })
+            // addMovingAnimeQueue({
+            //     targets,
+            //     pdx,
+            //     pdy
+            // })
         }
         this.context.onMoved();
         this.mouseMoved(e, pPos, lPos);

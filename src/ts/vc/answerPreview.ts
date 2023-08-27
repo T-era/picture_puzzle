@@ -1,4 +1,4 @@
-import { BACKGROUND_SUGGEST, OVERLAY, SUGGEST_CANVAS, SHOW_SUGGEST_BUTTON } from "@lib/doms";
+import { BACKGROUND_SUGGEST, SUGGEST_CANVAS, SHOW_SUGGEST_BUTTON } from "@lib/doms";
 import { Device } from "@lib/tools/deviceJudge";
 
 export function initAnswerPreview(device :Device) {
@@ -6,12 +6,12 @@ export function initAnswerPreview(device :Device) {
         toggleVisibility(
             { dom: SHOW_SUGGEST_BUTTON, event: 'mouseenter' },
             { dom: SHOW_SUGGEST_BUTTON, event: 'mouseleave' },
-            SUGGEST_CANVAS);
+            SUGGEST_CANVAS.canvas);
     } else {
         toggleVisibility(
             { dom: SHOW_SUGGEST_BUTTON, event: 'click' },
-            { dom: OVERLAY, event: 'click' },
-            SUGGEST_CANVAS, BACKGROUND_SUGGEST);
+            { dom: BACKGROUND_SUGGEST, event: 'click' },
+            SUGGEST_CANVAS.canvas, BACKGROUND_SUGGEST);
     }
 }
 

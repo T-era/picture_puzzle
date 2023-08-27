@@ -1,15 +1,15 @@
-import { SUGGEST_CANVAS, SUGGEST_CANVAS_CONTEXT } from "@lib/doms";
+import { FIELD, RESULT_CANVAS } from "@lib/doms";
 import { PLConverter, PosRange, Range } from "@lib/tools/posRange";
 import { FieldPart, Setting, Size } from "@lib/types";
 import { FieldPartImpl } from "./partsFactory";
 
-interface ImageParsed {
+export interface ImageParsed {
     img :HTMLImageElement;
     imageSize :Size;
 }
-type Callback<T> = (arg :T) => void;
-const cnvWidth = SUGGEST_CANVAS.width;
-const cnvHeight = SUGGEST_CANVAS.height;
+export type Callback<T> = (arg :T) => void;
+const cnvWidth = FIELD.clientWidth;
+const cnvHeight = FIELD.clientHeight;
 
 export async function splitImage(
     resultAsDataUrl :string,
@@ -17,16 +17,16 @@ export async function splitImage(
     ySize :number,
     imageCallback :Callback<ImageParsed>
 ) :Promise<Setting<FieldPart>> {
-    return new Promise<Setting<FieldPart>>((resolve, reject) => {
+    return new Promise<Setting<FieldPart>>(resolve => {
         const img = new Image();
         img.src = resultAsDataUrl;
-        img.onload = (e) => {
-            const imageSize = copyImgToCanvas();
+        img.onload = () => {
+            const imageSize = calcImageSize();
             imageCallback({ img, imageSize });
             const setting = splitImage(imageSize)
             resolve(setting);
 
-            function copyImgToCanvas() {
+            function calcImageSize() {
                 const wRatio = img.width / cnvWidth;
                 const hRatio = img.height / cnvHeight;
                 const ratio = Math.max(wRatio, hRatio);
@@ -45,7 +45,7 @@ export async function splitImage(
                     for (let x = 0; x < xSize; x ++) {
                         const lPos = { x, y };
                         const part = new FieldPartImpl(
-                            SUGGEST_CANVAS_CONTEXT,
+                            RESULT_CANVAS.context,
                             sizeConv,
                             lPos);
                         partLine.push(part);

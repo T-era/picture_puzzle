@@ -10,26 +10,8 @@ export class SwipeListener implements SwipeHandler {
         const target = this.context.parts[targetLPos.y][targetLPos.x];
         const emptyLPos = this.context.emptyLPos;
         if (target) {
-            const motion = motionFromDirection(direction);
             if (isValid()) {
-
-                let prevPart :FieldPart|undefined = undefined;
-                const targets :MovingTarget[] = [];
-                let tempLPos = { ...targetLPos };
-                while (! isSamePos(tempLPos, emptyLPos)) {
-                    const currentPart = this.context.parts[tempLPos.y][tempLPos.x];
-                    this.context.parts[tempLPos.y][tempLPos.x] = prevPart;
-                    const nextLPos = motion(tempLPos);
-    
-                    if (currentPart) {
-                        targets.push(currentPart.moveTo(nextLPos));
-                    } else {
-                        throw `NG!! ${tempLPos.x}, ${tempLPos.y}`;
-                    }
-                    prevPart = currentPart;
-                    tempLPos = nextLPos;
-                }
-                this.context.parts[tempLPos.y][tempLPos.x] = prevPart;
+                this.context.move(targetLPos, direction);
         
                 this.context.onMoved();
             } else {

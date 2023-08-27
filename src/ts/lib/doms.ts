@@ -1,51 +1,80 @@
 import { Size } from "./types";
 
-export interface SettingDomGroup {
-    IMG_PREVIEW :HTMLImageElement;
-    FILE_INPUT :HTMLInputElement;
-    X_SIZE_INPUT :HTMLInputElement;
-    Y_SIZE_INPUT :HTMLInputElement;
-    SETTING_OK :HTMLButtonElement;
-    SETTING_CANCEL ?:HTMLButtonElement;
-}
-export const Setting = {
-    Init: {
-        IMG_PREVIEW: document.getElementById('img_preview') as HTMLImageElement,
-        FILE_INPUT: document.getElementById('file_input') as HTMLInputElement,
-        X_SIZE_INPUT: document.getElementById('x_size') as HTMLInputElement,
-        Y_SIZE_INPUT: document.getElementById('y_size') as HTMLInputElement,
-        SETTING_OK: document.getElementById('setting_ok') as HTMLButtonElement,
-    },
-    Ingame: {
-        IMG_PREVIEW: document.getElementById('img_preview_') as HTMLImageElement,
-        FILE_INPUT: document.getElementById('file_input_') as HTMLInputElement,
-        X_SIZE_INPUT: document.getElementById('x_size_') as HTMLInputElement,
-        Y_SIZE_INPUT: document.getElementById('y_size_') as HTMLInputElement,
-        SETTING_OK: document.getElementById('setting_ok_') as HTMLButtonElement,
-        SETTING_CANCEL: document.getElementById('setting_cancel_') as HTMLButtonElement,
+function byId<T extends HTMLElement>(id :string) :T {
+    const dom = document.getElementById(id);
+    if (dom) {
+        return dom as T;
+    } else {
+        throw `${id} not found!`;
     }
+}
+
+export interface Canvas2d {
+    canvas :HTMLCanvasElement;
+    context :CanvasRenderingContext2D;
+    showAnimate() :void;
+    hide() :void;
+};
+function canvasById(id :string) :Canvas2d {
+    const canvas = byId<HTMLCanvasElement>(id);
+    const context = canvas.getContext('2d');
+    if (!context) {
+        throw `No 2d context (id: ${id})`
+    }
+    return {
+        canvas,
+        context,
+        showAnimate: () => canvas.classList.add('show_animate'),
+        hide: () => canvas.classList.remove('show_animate'),
+    }
+}
+
+export const SettingDoms = {
+    IMG_PREVIEW: byId<HTMLImageElement>('img_preview'),
+    FILE_INPUT: byId<HTMLInputElement>('file_input'),
+    X_SIZE_INPUT: byId<HTMLInputElement>('x_size'),
+    Y_SIZE_INPUT: byId<HTMLInputElement>('y_size'),
+    SETTING_OK: byId('setting_ok'),
+    SETTING_CANCEL: byId('setting_cancel'),
 } as const;
-export const SUGGEST_CANVAS = document.getElementById('suggest_canvas') as HTMLCanvasElement;
-export const SUGGEST_CANVAS_CONTEXT = SUGGEST_CANVAS.getContext('2d')!;
-export const SHOW_SUGGEST_BUTTON = document.getElementById('show_answer_button') as HTMLElement;
-export const FIELD = document.getElementById('field') as HTMLDivElement;
-export const SHUFFLE_BUTTON = document.getElementById('shuffle_button') as HTMLElement;
-export const MENU_BUTTON = document.getElementById('open_menu_button') as HTMLElement;
-export const RESULT_CANVAS = document.getElementById('result') as HTMLCanvasElement;
-export const RESULT_CANVAS_CONTEXT = RESULT_CANVAS.getContext('2d')!;
+export const FIELD = byId('field');
+export const SHOW_SUGGEST_BUTTON = byId('show_answer_button');
+export const SHUFFLE_BUTTON = byId('shuffle_button');
+export const MENU_BUTTON = byId('open_menu_button');
+
+export const SUGGEST_CANVAS = canvasById('suggest_canvas');
+export const RESULT_CANVAS = canvasById('result');
 
 export const SCENE = {
-    SETTING: document.getElementById('setting') as HTMLElement,
-    DEVICE_CHECK: document.getElementById('deviceCheck') as HTMLElement,
-    GAME: document.getElementById('game') as HTMLElement,
+    SETTING: byId('setting'),
+    DEVICE_CHECK: byId('device_check'),
+    GAME: byId('game_zone'),
 }
-export const OVERLAY = document.getElementById('overlay') as HTMLElement;
-export const BACKGROUND_SUGGEST = document.getElementById('background_suggest') as HTMLElement;
-export const BACKGROUND_SETTING = document.getElementById('background_setting') as HTMLElement;
+export const BACKGROUND_SUGGEST = byId('background_suggest');
+export const BACKGROUND_SETTING = byId('background_setting');
+
+
+export function show(target :HTMLElement) {
+    target.style.visibility = 'unset';
+}
+export function hide(target :HTMLElement) {
+    target.style.visibility = 'hidden';
+}
 
 export function copyImage(img :CanvasImageSource , imageSize :Size) {
-    SUGGEST_CANVAS_CONTEXT.clearRect(0, 0, SUGGEST_CANVAS.width, SUGGEST_CANVAS.height);
-    SUGGEST_CANVAS_CONTEXT.drawImage(img, 0, 0, imageSize.width, imageSize.height);
-    RESULT_CANVAS_CONTEXT.clearRect(0, 0, RESULT_CANVAS.width, RESULT_CANVAS.height);
-    RESULT_CANVAS_CONTEXT.drawImage(img, 2, 2, imageSize.width, imageSize.height);
+    copyTo(SUGGEST_CANVAS, .5);
+    copyTo(RESULT_CANVAS);
+    console.log('RC:::', RESULT_CANVAS.canvas.width, RESULT_CANVAS.canvas.height);
+    console.log(imageSize);
+
+    function copyTo(target :Canvas2d, ratio = 1) {
+        const width = imageSize.width * ratio;
+        const height = imageSize.height * ratio;
+        target.canvas.width = width;
+        target.canvas.height = height;
+        target.canvas.style.width = `${width}px`;
+        target.canvas.style.height = `${height}px`;
+        target.context.clearRect(0, 0, width, height);
+        target.context.drawImage(img, 0, 0, width, height);
+    }
 }

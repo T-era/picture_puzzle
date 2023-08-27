@@ -1,26 +1,27 @@
 import { Device, DeviceJudge } from "@lib/tools/deviceJudge";
-import { initInitializeSettingControl } from "./setting/settingControl";
-import { FieldPart, Setting } from "@lib/types";
-import { GameZoneContext } from "./gamezone/context";
-import { SCENE } from "@lib/doms";
-import { withElement } from "@lib/tools/modal";
+import { GameZoneContext } from "./vc/gameZone";
+import { BACKGROUND_SETTING, FIELD, RESULT_CANVAS, SCENE } from "@lib/doms";
+import { withElements } from "@lib/tools/modal";
+import { showSetting } from "./vc/settingControl";
 
 export module PicPuz {
     export async function run() {
+        BACKGROUND_SETTING.style.visibility = 'visible'
         SCENE.SETTING.style.visibility = 'hidden';;
         SCENE.DEVICE_CHECK.style.visibility = 'hidden';
-//        SCENE.GAME.style.visibility = 'hidden';
-return;
+        SCENE.GAME.style.visibility = 'hidden';
+const w = FIELD; //document.getElementsByClassName('main')[0] as HTMLElement;
+console.log(w, w.clientWidth, w.clientHeight);
         const deviceJudge = new DeviceJudge();
         
-        let setting = await withElement(SCENE.SETTING, initInitializeSettingControl);
+        let setting = await showSetting(true);
 
-        let device = await withElement(SCENE.DEVICE_CHECK, async () => {
+        let device = await withElements(async () => {
             return await showDeviceJudge(deviceJudge)
-        });
+        }, SCENE.DEVICE_CHECK);
 
         SCENE.GAME.style.visibility = 'visible';
-        new GameZoneContext(device, setting!);
+        new GameZoneContext(device, setting);
     }
 }
 
