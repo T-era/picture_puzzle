@@ -18,8 +18,8 @@ export class FieldPartImpl {
         const { x, y } = plConverter.pFromL(lPos, RangeType.Min);
         this.currentLPos = lPos;
         const imageData = cnvContext.getImageData(
-            x,
-            y,
+            3+x,
+            3+y,
             size.width - BORDER_WIDTH,
             size.height - BORDER_WIDTH);
 

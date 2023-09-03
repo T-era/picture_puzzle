@@ -18,6 +18,7 @@
     "isolatedModules": true,
     "noEmit": false,
     "sourceMap": true,
+    "downlevelIteration": true,
     "paths": {
       "@lib/*": ["./src/ts/lib/*"],
       "@core/*": ["./src/ts/core/*"]

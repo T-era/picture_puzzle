@@ -49,10 +49,15 @@ export const SCENE = {
     SETTING: byId('setting'),
     DEVICE_CHECK: byId('device_check'),
     GAME: byId('game_zone'),
-}
+} as const;
+
 export const BACKGROUND_SUGGEST = byId('background_suggest');
 export const BACKGROUND_SETTING = byId('background_setting');
 
+export const SCORE_BOARD = {
+    TOUCH: byId('touch_cnt'),
+    TOTAL: byId('total_cnt'),
+} as const;
 
 export function show(target :HTMLElement) {
     target.style.visibility = 'unset';

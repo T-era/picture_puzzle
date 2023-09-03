@@ -4,6 +4,7 @@ import { Device } from "@lib/tools/deviceJudge";
 import { initAnswerPreview } from "./answerPreview";
 import { showSetting } from "./settingControl";
 import { Game } from "./game";
+import { scoreBoard } from "./scoreBoard";
 
 export class GameZoneContext {
     private gameView: Game;
@@ -32,6 +33,7 @@ export class GameZoneContext {
     }
 
     private shuffleRestart() {
+        scoreBoard.reset();
         this.gameView.shuffle();
     }
 }

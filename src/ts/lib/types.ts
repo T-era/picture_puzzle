@@ -32,6 +32,18 @@ export enum MovingDirection {
     ToLeft = 3,
     ToRight = 4,
 }
+export function reverse(md :MovingDirection) :MovingDirection {
+    switch (md) {
+        case MovingDirection.ToUp:
+            return MovingDirection.ToDown;
+        case MovingDirection.ToDown:
+            return MovingDirection.ToUp;
+        case MovingDirection.ToLeft:
+            return MovingDirection.ToRight;
+        case MovingDirection.ToRight:
+            return MovingDirection.ToLeft;
+    }
+}
 
 export type Motion = (p :Pos) => Pos;
 
@@ -78,4 +90,11 @@ export interface FieldPart {
 
 export interface EventListener {
     revoke() :void;
+}
+
+export interface ScoreBoard {
+    reset() :void;
+    addTouch() :void;
+    addTouch(d :number) :void;
+    addTotal(d :number) :void;
 }

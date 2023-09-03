@@ -1,9 +1,20 @@
-import { addMovingAnimeQueue } from "@lib/tools/anime/moving";
 import { EventWrapper } from "../../eventWrapper";
 import { RangeType } from "@lib/tools/posRange";
-import { FieldPart, isSamePos, motionFromDirection, MovingDirection, MovingTarget, Pos } from "@lib/types";
+import { isSamePos, motionFromDirection, MovingDirection, Pos, reverse } from "@lib/types";
 import { GameContext } from "../gameContext";
 import { FIELD } from "@lib/doms";
+
+interface Moving {
+    direction :MovingDirection;
+    entryLPos :Pos;
+}
+
+const directionToCssClass = new Map<MovingDirection, string>([
+    [MovingDirection.ToUp, 'up'],
+    [MovingDirection.ToDown, 'down'],
+    [MovingDirection.ToLeft, 'left'],
+    [MovingDirection.ToRight, 'right'],
+]);
 
 class MouseEventWrapper extends EventWrapper<MouseEvent> {
     constructor(private context: GameContext) {
@@ -33,6 +44,7 @@ class MouseEventWrapper extends EventWrapper<MouseEvent> {
     }
 }
 
+
 export class MouseActionListener {
     constructor(private context :GameContext) {
         const eventWrapper = new MouseEventWrapper(context);
@@ -42,64 +54,31 @@ export class MouseActionListener {
 
     mouseMoved(e :MouseEvent, pPos :Pos, lPos :Pos) {
         const emptyLPos = this.context.emptyLPos;
-        const direction = this.getMovingDirection(pPos, lPos, emptyLPos);
-        FIELD.classList.remove('up');
-        FIELD.classList.remove('down');
-        FIELD.classList.remove('left');
-        FIELD.classList.remove('right');
-        if (direction) {
-            if (direction === MovingDirection.ToUp) {
-                FIELD.classList.add('up');
-            } else if (direction === MovingDirection.ToDown) {
-                FIELD.classList.add('down');
-            } else if (direction === MovingDirection.ToLeft) {
-                FIELD.classList.add('left');
-            } else if (direction === MovingDirection.ToRight) {
-                FIELD.classList.add('right');
+        const moving = this.getMovingDirection(pPos, lPos, emptyLPos);
+        for (let className of directionToCssClass.values()) {
+            FIELD.classList.remove(className);
+        }
+        if (moving) {
+            const { direction } = moving;
+            const className = directionToCssClass.get(direction);
+            if (className) {
+                FIELD.classList.add(className);
             }
         }
     }
     clicked(e :MouseEvent, pPos :Pos, lPos :Pos) {
         const emptyLPos = this.context.emptyLPos;
-        const direction = this.getMovingDirection(pPos, lPos, emptyLPos);
+        const moving = this.getMovingDirection(pPos, lPos, emptyLPos);
 
-        if (direction) {
-            this.context.move(lPos, direction);
-            // const motion = motionFromDirection(direction);
-            // const dp = motion({ x: 0, y: 0 });
-
-            // const pdx = dp.x * this.context.setting.partWidth;
-            // const pdy = dp.y * this.context.setting.partHeight;
-
-            // let prevPart :FieldPart|undefined = undefined;
-            // const targets :MovingTarget[] = [];
-            // let tempLPos = { ...lPos };
-            // while (! isSamePos(tempLPos, emptyLPos)) {
-            //     const currentPart = this.context.parts[tempLPos.y][tempLPos.x];
-            //     this.context.parts[tempLPos.y][tempLPos.x] = prevPart;
-            //     const nextLPos = motion(tempLPos);
-
-            //     if (currentPart) {
-            //         targets.push(currentPart.moveTo(nextLPos));
-            //     } else {
-            //         throw `NG!! ${tempLPos.x}, ${tempLPos.y}`;
-            //     }
-            //     prevPart = currentPart;
-            //     tempLPos = nextLPos;
-            // }
-            // this.context.parts[tempLPos.y][tempLPos.x] = prevPart;
-
-            // addMovingAnimeQueue({
-            //     targets,
-            //     pdx,
-            //     pdy
-            // })
+        if (moving) {
+            const { entryLPos, direction } = moving;
+            this.context.move(entryLPos, direction);
         }
         this.context.onMoved();
         this.mouseMoved(e, pPos, lPos);
     }
 
-    private getMovingDirection(pPos :Pos, lPos :Pos, emptyLPos :Pos) :MovingDirection|undefined {
+    private getMovingDirection(pPos :Pos, lPos :Pos, emptyLPos :Pos) :Moving|undefined {
         if (isSamePos(lPos, emptyLPos)) {
             // マス内の位置で方向性で決める
             const pCenter = this.context.setting.plConverter.pFromL(lPos, RangeType.Center);
@@ -109,25 +88,25 @@ export class MouseActionListener {
             const ady = Math.abs(dy);
             if (adx > ady) {
                 if (dx < 0 && this.context.isInRange({ x: lPos.x - 1, y: lPos.y })) {
-                    return MovingDirection.ToRight;
+                    return { direction: MovingDirection.ToRight, entryLPos: { x: lPos.x - 1, y: lPos.y } };
                 } else if (dx > 0 && this.context.isInRange({ x: lPos.x + 1, y: lPos.y })) {
-                    return MovingDirection.ToLeft;
+                    return { direction: MovingDirection.ToLeft, entryLPos: { x: lPos.x + 1, y: lPos.y } };
                 }
             } else if (ady > adx) {
                 if (dy < 0 && this.context.isInRange({ x: lPos.x, y: lPos.y - 1 })) {
-                    return MovingDirection.ToDown;
+                    return { direction: MovingDirection.ToDown, entryLPos: { x: lPos.x, y: lPos.y - 1 } };
                 } else if (dy > 0 && this.context.isInRange({ x: lPos.x, y: lPos.y + 1 })) {
-                    return MovingDirection.ToUp;
+                    return { direction: MovingDirection.ToUp, entryLPos: { x: lPos.x, y: lPos.y + 1 } };
                 }
             }
         } else if (lPos.x === emptyLPos.x && lPos.y > emptyLPos.y) {
-            return MovingDirection.ToUp;
+            return { direction: MovingDirection.ToUp, entryLPos: lPos };
         } else if (lPos.x === emptyLPos.x && lPos.y < emptyLPos.y) {
-            return MovingDirection.ToDown;
+            return { direction:MovingDirection.ToDown, entryLPos: lPos };
         } else if (lPos.y === emptyLPos.y && lPos.x > emptyLPos.x) {
-            return MovingDirection.ToLeft;
+            return { direction:MovingDirection.ToLeft, entryLPos: lPos };
         } else if (lPos.y === emptyLPos.y && lPos.x < emptyLPos.x) {
-            return MovingDirection.ToRight;
+            return { direction:MovingDirection.ToRight, entryLPos: lPos };
         } 
     }
 

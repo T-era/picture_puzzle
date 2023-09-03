@@ -3,6 +3,7 @@ import { GameZoneContext } from "./vc/gameZone";
 import { BACKGROUND_SETTING, FIELD, RESULT_CANVAS, SCENE } from "@lib/doms";
 import { withElements } from "@lib/tools/modal";
 import { showSetting } from "./vc/settingControl";
+import { scoreBoard } from "./vc/scoreBoard";
 
 export module PicPuz {
     export async function run() {
@@ -10,8 +11,8 @@ export module PicPuz {
         SCENE.SETTING.style.visibility = 'hidden';;
         SCENE.DEVICE_CHECK.style.visibility = 'hidden';
         SCENE.GAME.style.visibility = 'hidden';
-const w = FIELD; //document.getElementsByClassName('main')[0] as HTMLElement;
-console.log(w, w.clientWidth, w.clientHeight);
+
+        scoreBoard.reset();
         const deviceJudge = new DeviceJudge();
         
         let setting = await showSetting(true);

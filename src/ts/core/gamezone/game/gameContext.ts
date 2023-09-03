@@ -1,6 +1,7 @@
 import { FIELD } from "@lib/doms";
 import { addMovingAnimeQueue } from "@lib/tools/anime/moving";
 import { FieldPart, MovingDirection, MovingTarget, Pos, Setting, isSamePos, motionFromDirection } from "@lib/types";
+import { scoreBoard } from "../../../vc/scoreBoard";
 
 const START_EMPTY_POS = { x: 0, y: 0 };
 
@@ -69,7 +70,13 @@ export class GameContext {
         this.move({x: 0, y: 0}, MovingDirection.ToRight, false);
     }
 
-    move(targetLPos :Pos, direction :MovingDirection, animate = true) {
+    /**
+     * プレート移動
+     * @param targetLPos 移動対象の論理座標 
+     * @param direction 移動方向
+     * @param action ユーザ操作による移動かどうか (shuffle1中の移動などはユーザ操作ではない)
+     */
+    move(targetLPos :Pos, direction :MovingDirection, action = true) {
         const emptyLPos = this.emptyLPos;
         const motion = motionFromDirection(direction);
         const dp = motion({ x: 0, y: 0 });
@@ -95,12 +102,15 @@ export class GameContext {
         }
         this.parts[tempLPos.y][tempLPos.x] = prevPart;
 
-        if (animate) {
+        if (action) {
+            // ユーザ操作の場合のみ。TODO 変数名
             addMovingAnimeQueue({
                 targets,
                 pdx,
                 pdy
             })
+            scoreBoard.addTouch();
+            scoreBoard.addTotal(targets.length)
         }
     }
 }

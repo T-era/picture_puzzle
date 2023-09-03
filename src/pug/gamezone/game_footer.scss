@@ -1,20 +1,40 @@
 .footer {
-    display: flex;
-    flex-direction: row;
-    gap: 16px;
-    justify-content: center;
-    margin: auto;
-    .icon {
-        width: 32px;
-        height: 32px;
-        background-color: #eee;
-        border: 1px solid #ccc;
-        padding: 2px;
-        border-radius: 5px;
+    display: grid;
+    grid-template-columns: 20% 60% 20%;
 
-        .black {
-            stroke: #004;
-            fill: #004;
+
+    .control {
+        grid-column: 2;
+        display: flex;
+        flex-direction: row;
+        gap: 16px;
+        justify-content: center;
+        margin: auto;
+        .icon {
+            width: 32px;
+            height: 32px;
+            background-color: #eee;
+            border: 1px solid #ccc;
+            padding: 2px;
+            border-radius: 5px;
+    
+            .black {
+                stroke: #004;
+                fill: #004;
+            }
+        }
+    }
+    .status {
+        grid-column: 3;
+        display: flex;
+        flex-direction: row;
+        gap: 16px;
+        justify-content: center;
+        margin: auto;
+        .score {
+            display: inline-block;
+            width: 3em;
+            text-align: end;
         }
     }
 }

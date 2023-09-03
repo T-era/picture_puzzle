@@ -1,4 +1,10 @@
 div.footer
-    include svg_show_answer
-    include svg_shuffle 
-    include svg_menu
+    .control
+        include svg_show_answer
+        include svg_shuffle 
+        include svg_menu
+    .status
+        span
+            span#touch_cnt.score 1
+            span :
+            span#total_cnt.score 2
